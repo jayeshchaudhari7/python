@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ restaurant.name }}</h2>
+<p>{{ restaurant.description }}</p>
+
+<h4>Menu</h4>
+<div class="row">
+  {% for item in menu %}
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <img src="{{ item.image.url }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.name }}</h5>
+          <p>₹{{ item.price }}</p>
+          <a href="{% url 'add_to_cart' item.id %}" class="btn btn-success">Add to Cart</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<h4 class="mt-5">Submit Review</h4>
+<form method="post" action="{% url 'submit_review' restaurant.id %}">
+  {% csrf_token %}
+  <textarea name="review" class="form-control" placeholder="Write review"></textarea><br>
+  <input type="number" name="rating" class="form-control" placeholder="Rating (1-5)"><br>
+  <button class="btn btn-primary">Submit</button>
+</form>
+
+<h4 class="mt-4">Reviews</h4>
+<ul class="list-group">
+  {% for review in reviews %}
+    <li class="list-group-item">
+      <strong>{{ review.user }}</strong>: {{ review.review }} (⭐ {{ review.rating }})
+    </li>
+  {% empty %}
+    <li class="list-group-item">No reviews yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
